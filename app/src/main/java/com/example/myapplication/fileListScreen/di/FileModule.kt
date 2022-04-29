@@ -1,7 +1,5 @@
 package com.example.myapplication.fileListScreen.di
 
-import com.example.myapplication.fileListScreen.data.localDataSource.FileLocalDataSource
-import com.example.myapplication.fileListScreen.data.localDataSource.FileLocalDataSourceImp
 import com.example.myapplication.fileListScreen.data.remoteDataSource.FileRemoteDataSource
 import com.example.myapplication.fileListScreen.data.remoteDataSource.FileRemoteDataSourceImp
 import com.example.myapplication.fileListScreen.data.repository.FileRepositoryImp
@@ -10,12 +8,11 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.components.SingletonComponent
 
-@InstallIn(ViewModelComponent::class)
 @Module
+@InstallIn(ViewModelComponent::class)
 abstract class FileModule {
-    @Binds
-    abstract fun bindLocalDataSource(localDataSourceImp: FileLocalDataSourceImp): FileLocalDataSource
 
     @Binds
     abstract fun bindRemoteDataSource(localDataSourceImp: FileRemoteDataSourceImp): FileRemoteDataSource
