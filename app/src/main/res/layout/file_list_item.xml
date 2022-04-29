@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:layout_marginHorizontal="12dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="16dp">
+
+            <TextView
+                android:id="@+id/fileItemNameTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="6dp"
+                android:textAlignment="textStart"
+                app:layout_constraintEnd_toStartOf="@id/fileItemActionImageView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:text="Ahmed Medhat" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/fileItemActionImageView"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:scaleType="center"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:src="@drawable/ic_baseline_arrow_downward_24"
+                android:layout_marginEnd="12dp"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>
