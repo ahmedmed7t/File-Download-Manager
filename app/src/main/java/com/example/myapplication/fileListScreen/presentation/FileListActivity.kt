@@ -5,6 +5,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.databinding.ActivityFileListBinding
 import com.example.myapplication.fileListScreen.presentation.adapter.FileListAdapter
+import com.example.myapplication.fileListScreen.presentation.downloadDialog.DownloadDialog
 import com.example.myapplication.fileListScreen.presentation.helpers.FileClickListener
 import com.example.myapplication.fileListScreen.presentation.helpers.FileUtils
 import dagger.hilt.android.AndroidEntryPoint
