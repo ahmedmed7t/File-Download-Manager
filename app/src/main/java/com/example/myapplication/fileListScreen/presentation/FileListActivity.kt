@@ -89,16 +89,16 @@ class FileListActivity : AppCompatActivity(), FileClickListener, ProgressListene
     }
 
     private fun updateDialogPercentageProgress(progress: Int) {
-        showDownloadDialog()
         downloadDialog.apply {
+            showDownloadDialog()
             enablePercentageMode()
             setDownloadPercentageProgress(progress)
         }
     }
 
     private fun updateDialogFileSizeProgress(fileSize: Double) {
-        showDownloadDialog()
         downloadDialog.apply {
+            showDownloadDialog()
             enableFileSizeMode()
             setDownloadSizeProgress(fileSize)
         }
@@ -133,13 +133,13 @@ class FileListActivity : AppCompatActivity(), FileClickListener, ProgressListene
     }
 
     override fun onDownloadSuccess(position: Int) {
-        Toast.makeText(this, "Success", Toast.LENGTH_LONG).show()
+        listAdapter.updateDownloadedItem(position)
         dismissDownloadDialog()
     }
 
     override fun onDownloadFail(position: Int) {
         hideProgressBar()
-        Toast.makeText(this, "fail", Toast.LENGTH_LONG).show()
+        listAdapter.updateFailItem(position)
         dismissDownloadDialog()
     }
 
