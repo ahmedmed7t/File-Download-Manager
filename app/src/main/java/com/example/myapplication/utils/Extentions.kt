@@ -1,5 +1,9 @@
 package com.example.myapplication.utils
 
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.core.app.ActivityCompat
 import com.example.myapplication.fileListScreen.domain.models.Download
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -48,4 +52,19 @@ fun Double.roundOffDecimal(): Double {
     val df = DecimalFormat("#.##")
     df.roundingMode = RoundingMode.CEILING
     return df.format(this).toDouble()
+}
+
+fun Context.hasPermissions(permissions: Array<String>): Boolean {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        for (permission in permissions) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    permission
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return false
+            }
+        }
+    }
+    return true
 }

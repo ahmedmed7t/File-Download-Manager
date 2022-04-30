@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">File download manager</string>
     <string name="downloading">Downloading...</string>
+    <string name="permission_denied_message">The app was not allowed to write in your storage</string>
 </resources>
