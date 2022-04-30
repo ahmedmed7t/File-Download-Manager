@@ -8,53 +8,44 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import okhttp3.ResponseBody
 import java.io.File
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 fun ResponseBody.downloadToFileWithProgress(directory: File, filename: String): Flow<Download> =
     flow {
-        emit(Download.Progress(0))
+        emit(Download.ProgressPercentage(0))
 
-        // flag to delete file if download errors or is cancelled
-        var deleteFile = true
         val file = File(directory, "${filename}.${contentType()?.subtype}")
-
-        try {
-            byteStream().use { inputStream ->
-                file.outputStream().use { outputStream ->
-                    val totalBytes = contentLength()
-                    val data = ByteArray(8_192)
-                    var progressBytes = 0L
-
-                    while (true) {
-                        val bytes = inputStream.read(data)
-
-                        if (bytes == -1) {
-                            break
-                        }
-
-                        outputStream.channel
-                        outputStream.write(data, 0, bytes)
-                        progressBytes += bytes
-
-                        emit(Download.Progress(percent = ((progressBytes * 100) / totalBytes).toInt()))
+        byteStream().use { inputStream ->
+            file.outputStream().use { outputStream ->
+                val totalBytes = contentLength()
+                val data = ByteArray(8_192)
+                var progressBytes = 0L
+                while (true) {
+                    val bytes = inputStream.read(data)
+                    if (bytes == -1) {
+                        break
                     }
 
-                    when {
-                        progressBytes < totalBytes ->
-                            throw Exception("missing bytes")
-                        progressBytes > totalBytes ->
-                            throw Exception("too many bytes")
-                        else ->
-                            deleteFile = false
+                    outputStream.channel
+                    outputStream.write(data, 0, bytes)
+                    progressBytes += bytes
+
+                    if (totalBytes == -1) {
+                        // file size unknown
+                        emit(Download.ProgressSize((progressBytes.toDouble() / (1024L * 1024L)).roundOffDecimal()))
+                    } else {
+                        emit(Download.ProgressPercentage(percent = ((progressBytes * 100) / totalBytes).toInt()))
                     }
                 }
             }
-            emit(Download.Finished(file))
-        } finally {
-            // check if download was successful
-            if (deleteFile) {
-                emit(Download.Fail)
-                file.delete()
-            }
         }
+        emit(Download.Finished)
     }.flowOn(Dispatchers.IO)
         .distinctUntilChanged()
+
+fun Double.roundOffDecimal(): Double {
+    val df = DecimalFormat("#.##")
+    df.roundingMode = RoundingMode.CEILING
+    return df.format(this).toDouble()
+}

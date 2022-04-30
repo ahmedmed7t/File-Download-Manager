@@ -1,31 +1,35 @@
 package com.example.myapplication.fileListScreen.presentation
 
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.example.myapplication.databinding.ActivityFileListBinding
-import com.example.myapplication.fileListScreen.domain.models.Download
 import com.example.myapplication.fileListScreen.presentation.adapter.FileListAdapter
 import com.example.myapplication.fileListScreen.presentation.downloadDialog.DownloadDialog
 import com.example.myapplication.fileListScreen.presentation.helpers.FileClickListener
-import com.example.myapplication.fileListScreen.presentation.helpers.FileUtils
+import com.example.myapplication.utils.FileUtils
+import com.example.myapplication.fileListScreen.presentation.helpers.ProgressListener
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 
 @AndroidEntryPoint
-class FileListActivity : AppCompatActivity(), FileClickListener {
+class FileListActivity : AppCompatActivity(), FileClickListener, ProgressListener {
     private val viewModel: FileListViewModel by viewModels()
     private lateinit var binding: ActivityFileListBinding
 
     private val listAdapter: FileListAdapter = FileListAdapter(arrayListOf(), this)
-    private val downloadDialog = DownloadDialog(this)
+    private val downloadDialog by lazy { DownloadDialog(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFileListBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initRecyclerView()
-        observeViewModelValues()
 
+        observeViewModelValues()
 
         loadFileList()
     }
@@ -34,20 +38,6 @@ class FileListActivity : AppCompatActivity(), FileClickListener {
         viewModel.apply {
             filesList.observe(this@FileListActivity) { files ->
                 listAdapter.setFiles(files)
-            }
-
-            downloadProgress.observe(this@FileListActivity) { downloadProgress ->
-                when (downloadProgress) {
-                    is Download.Progress -> {
-                        updateDialogProgress(downloadProgress.percent)
-                    }
-                    is Download.Fail -> {
-                        TODO()
-                    }
-                    is Download.Finished -> {
-                        TODO()
-                    }
-                }
             }
         }
 
@@ -64,13 +54,63 @@ class FileListActivity : AppCompatActivity(), FileClickListener {
     }
 
     override fun onItemClicked(position: Int) {
-        downloadDialog.show()
-        viewModel.loadFile(position, externalCacheDir!!)
+        binding.fileListProgressBar.visibility = View.VISIBLE
+        viewModel.loadFile(position, getStorageFile(), this)
     }
 
-    private fun updateDialogProgress(progress: Int) {
-        if (downloadDialog.isShowing) {
-            downloadDialog.setDownloadProgress(progress)
+    private fun getStorageFile(): File {
+        val file = File(externalCacheDir.toString())
+        if (!file.exists()) {
+            file.mkdirs()
+        }
+        return file
+    }
+
+    override fun onPercentageProgress(progress: Int) {
+        hideProgressBar()
+        updateDialogPercentageProgress(progress)
+    }
+
+    override fun onSizeProgress(fileSize: Double) {
+        hideProgressBar()
+        updateDialogFileSizeProgress(fileSize)
+    }
+
+    override fun onDownloadSuccess(position: Int) {
+        Toast.makeText(this, "Success", Toast.LENGTH_LONG).show()
+        dismissDownloadDialog()
+    }
+
+    override fun onDownloadFail(position: Int) {
+        hideProgressBar()
+        Toast.makeText(this, "fail", Toast.LENGTH_LONG).show()
+        dismissDownloadDialog()
+    }
+
+    private fun updateDialogPercentageProgress(progress: Int) {
+        dismissDownloadDialog()
+        downloadDialog.apply {
+            enablePercentageMode()
+            setDownloadPercentageProgress(progress)
         }
     }
+
+    private fun updateDialogFileSizeProgress(fileSize: Double) {
+        dismissDownloadDialog()
+        downloadDialog.apply {
+            enableFileSizeMode()
+            setDownloadSizeProgress(fileSize)
+        }
+    }
+
+    private fun hideProgressBar() {
+        if (binding.fileListProgressBar.isVisible)
+            binding.fileListProgressBar.visibility = View.GONE
+    }
+
+    private fun dismissDownloadDialog() {
+        if (downloadDialog.isShowing)
+            downloadDialog.dismiss()
+    }
+
 }

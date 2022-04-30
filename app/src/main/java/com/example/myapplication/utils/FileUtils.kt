@@ -1,4 +1,4 @@
-package com.example.myapplication.fileListScreen.presentation.helpers
+package com.example.myapplication.utils
 
 import android.content.Context
 import com.example.myapplication.fileListScreen.domain.models.FileModel

@@ -18,7 +18,6 @@ class FileListAdapter(
         return FileItemViewHolder(binding)
     }
 
-
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         holder as FileItemViewHolder
         holder.binding.fileItemNameTextView.text = fileList[position].name
@@ -29,11 +28,11 @@ class FileListAdapter(
 
     override fun getItemCount() = fileList.size
 
-    inner class FileItemViewHolder(val binding: FileListItemBinding) :
-        RecyclerView.ViewHolder(binding.root)
-
-    fun setFiles(list: ArrayList<FileModel>){
+    fun setFiles(list: ArrayList<FileModel>) {
         fileList = list
         notifyDataSetChanged()
     }
+
+    inner class FileItemViewHolder(val binding: FileListItemBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

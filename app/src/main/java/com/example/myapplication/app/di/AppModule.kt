@@ -32,11 +32,10 @@ class AppModule {
     @Singleton
     fun provideRetrofit(
         okHttpClient: OkHttpClient,
-        BASE_URL: String
     ): Retrofit =
         Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
+            .baseUrl("http://localhost/")
             .client(okHttpClient)
             .build()
 

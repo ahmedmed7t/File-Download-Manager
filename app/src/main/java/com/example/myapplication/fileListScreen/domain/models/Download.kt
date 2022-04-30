@@ -1,9 +1,8 @@
 package com.example.myapplication.fileListScreen.domain.models
 
-import java.io.File
-
 sealed class Download{
-    data class Progress(val percent: Int) : Download()
-    data class Finished(val file: File) : Download()
+    data class ProgressPercentage(val percent: Int) : Download()
+    data class ProgressSize(val fileSize: Double) : Download()
+    object Finished : Download()
     object Fail : Download()
 }
