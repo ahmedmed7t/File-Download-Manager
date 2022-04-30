@@ -19,9 +19,10 @@ class DownloadDialog(context: Context) : Dialog(context) {
     }
 
     fun setDownloadPercentageProgress(progress: Int) {
-        binding.downloadDialogProgressValue.text = "$progress %"
-        binding.downloadDialogPercentageProgress.progress = progress
-
+        binding.apply {
+            downloadDialogProgressValue.text = "$progress %"
+            downloadDialogPercentageProgress.progress = progress
+        }
     }
 
     fun setDownloadSizeProgress(fileSize: Double) {
@@ -29,13 +30,17 @@ class DownloadDialog(context: Context) : Dialog(context) {
     }
 
     fun enablePercentageMode() {
-        binding.downloadDialogSizeProgress.visibility = View.GONE
-        binding.downloadDialogPercentageProgress.visibility = View.VISIBLE
+        binding.apply {
+            downloadDialogSizeProgress.visibility = View.GONE
+            downloadDialogPercentageProgress.visibility = View.VISIBLE
+        }
     }
 
     fun enableFileSizeMode() {
-        binding.downloadDialogSizeProgress.visibility = View.VISIBLE
-        binding.downloadDialogPercentageProgress.visibility = View.GONE
+        binding.apply {
+            downloadDialogSizeProgress.visibility = View.VISIBLE
+            downloadDialogPercentageProgress.visibility = View.GONE
+        }
     }
 
     private fun initDialog() {

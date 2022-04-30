@@ -22,19 +22,21 @@ class FileListAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         holder as FileItemViewHolder
-        holder.binding.fileItemNameTextView.text = fileList[position].name
-        holder.binding.fileItemActionImageView.setOnClickListener {
-            if (fileList[position].downloadStatus == null)
-                fileClickListener.onItemClicked(position)
-        }
+        holder.binding.apply {
+            fileItemNameTextView.text = fileList[position].name
+            fileItemActionImageView.setOnClickListener {
+                if (fileList[position].downloadStatus == null)
+                    fileClickListener.onItemClicked(position)
+            }
 
-        fileList[position].downloadStatus?.let { downloadStatus ->
-            when (downloadStatus) {
-                DownloadStatus.DOWNLOADED -> {
-                    holder.binding.fileItemActionImageView.setImageResource(R.drawable.green_correct_icon)
-                }
-                DownloadStatus.FAIL -> {
-                    holder.binding.fileItemActionImageView.setImageResource(R.drawable.red_cancel_icon)
+            fileList[position].downloadStatus?.let { downloadStatus ->
+                when (downloadStatus) {
+                    DownloadStatus.DOWNLOADED -> {
+                        fileItemActionImageView.setImageResource(R.drawable.green_correct_icon)
+                    }
+                    DownloadStatus.FAIL -> {
+                        fileItemActionImageView.setImageResource(R.drawable.red_cancel_icon)
+                    }
                 }
             }
         }
